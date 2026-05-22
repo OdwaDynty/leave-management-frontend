@@ -35,6 +35,14 @@ const { isMobile } = useWindowSize();
   // ── Handle Form Submit ─────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent page refresh
+    setIsLoading(true);
+    setSlowStart(false);
+
+      // If loading takes more than 5 seconds show a message
+      // This happens when Render server is waking up
+  const slowTimer = setTimeout(() => {
+    setSlowStart(true);
+    }, 5000);
 
     // Basic validation
     if (!formData.email || !formData.password) {
@@ -62,6 +70,8 @@ const { isMobile } = useWindowSize();
       toast.error(message);
     } finally {
       setIsLoading(false);
+      setSlowStart(false);
+      clearTimeout(slowTimer);
     }
   };
 
@@ -134,6 +144,23 @@ const { isMobile } = useWindowSize();
                 />
               </div>
             </div>
+          {/* Show message if server is taking long to respond */}
+          {slowStart && (
+          <div style={{
+                background:   '#FEF3C7',
+                border:       '1px solid #FCD34D',
+                borderRadius: '0.5rem',
+                padding:      '0.75rem 1rem',
+                marginTop:    '1rem',
+                fontSize:     '0.8125rem',
+                color:        '#92400E',
+                textAlign:    'center',
+                lineHeight:   1.5,
+                }}>
+              ⏳ Server is starting up — this takes about 30
+              seconds on first load. Please wait...
+            </div>
+              )}
 
             {/* Password */}
             <div className="form-group">
