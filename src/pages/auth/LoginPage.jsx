@@ -36,12 +36,13 @@ const { isMobile } = useWindowSize();
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent page refresh
     setIsLoading(true);
-    setSlowStart(false);
+    
+    //setSlowStart(false);
 
       // If loading takes more than 5 seconds show a message
       // This happens when Render server is waking up
   const slowTimer = setTimeout(() => {
-    setSlowStart(true);
+    //setSlowStart(true);
     }, 5000);
 
     // Basic validation
@@ -70,7 +71,7 @@ const { isMobile } = useWindowSize();
       toast.error(message);
     } finally {
       setIsLoading(false);
-      setSlowStart(false);
+      //setSlowStart(false);
       clearTimeout(slowTimer);
     }
   };
