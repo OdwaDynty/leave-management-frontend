@@ -144,25 +144,8 @@ const { isMobile } = useWindowSize();
                 />
               </div>
             </div>
-          {/* Show message if server is taking long to respond */}
-          {slowStart && (
-          <div style={{
-                background:   '#FEF3C7',
-                border:       '1px solid #FCD34D',
-                borderRadius: '0.5rem',
-                padding:      '0.75rem 1rem',
-                marginTop:    '1rem',
-                fontSize:     '0.8125rem',
-                color:        '#92400E',
-                textAlign:    'center',
-                lineHeight:   1.5,
-                }}>
-              ⏳ Server is starting up — this takes about 30
-              seconds on first load. Please wait...
-            </div>
-              )}
-
-            {/* Password */}
+         
+         {/* Password */}
             <div className="form-group">
               <label className="form-label">Password</label>
               <div style={styles.inputWrap}>
