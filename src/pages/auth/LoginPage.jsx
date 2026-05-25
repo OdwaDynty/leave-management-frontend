@@ -2,29 +2,35 @@
 // The first page users see when not logged in
 // Handles email/password login and redirects to dashboard
 
-import { useState }        from 'react';
-import { Link }            from 'react-router-dom';
-import { toast }           from 'react-hot-toast';
-import { LogIn, Mail, Lock, Briefcase } from 'lucide-react';
-import { login }           from '../../api/auth';
-import { useAuth }         from '../../context/AuthContext';
-
-import useWindowSize from '../../hooks/useWindowSize';
+import { useState }              from 'react';
+import { Link, useNavigate }     from 'react-router-dom';
+import { toast }                 from 'react-hot-toast';
+import { LogIn, Mail,
+         Lock, Briefcase }       from 'lucide-react';
+import { useAuth }               from '../../context/AuthContext';
+import useWindowSize             from '../../hooks/useWindowSize';
 
 const LoginPage = () => {
-
-const { isMobile } = useWindowSize();
+  // useNavigate lets us redirect the user after login
+  const navigate          = useNavigate();
+  const { loginUser }     = useAuth();
+  const { isMobile }      = useWindowSize();
 
   // ── Form State ─────────────────────────────────────
   const [formData, setFormData] = useState({
     email:    '',
     password: '',
   });
-  const [isLoading, setIsLoading] = useState(false);
 
-  const { loginUser } = useAuth();
+  // true while the login API call is in progress
+  const [isLoading,  setIsLoading]  = useState(false);
+
+  // true if the API call takes longer than 5 seconds
+  // happens when Render server is waking up from sleep
+  const [slowStart,  setSlowStart]  = useState(false);
 
   // ── Handle Input Changes ───────────────────────────
+  // Updates formData when user types in any input field
   const handleChange = (e) => {
     setFormData(prev => ({
       ...prev,
@@ -34,43 +40,35 @@ const { isMobile } = useWindowSize();
 
   // ── Handle Form Submit ─────────────────────────────
   const handleSubmit = async (e) => {
-    const [slowStart, setSlowStart] = useState(false);
-    e.preventDefault(); // Prevent page refresh
+    // Prevent the browser from reloading the page
+    e.preventDefault();
     setIsLoading(true);
-    
     setSlowStart(false);
 
-      // If loading takes more than 5 seconds show a message
-      // This happens when Render server is waking up
-  const slowTimer = setTimeout(() => {
-    setSlowStart(true);
+    // After 5 seconds show the "server waking up" message
+    // Render free tier can take 30+ seconds on cold start
+    const slowTimer = setTimeout(() => {
+      setSlowStart(true);
     }, 5000);
 
-    // Basic validation
-    if (!formData.email || !formData.password) {
-      toast.error('Please enter your email and password.');
-      return;
-    }
-
-    setIsLoading(true);
-
     try {
-      const response = await login(formData);
-      const { token, user } = response.data;
+      const res = await loginUser({
+        email:    formData.email,
+        password: formData.password,
+      });
 
-      // Save token and user to context and localStorage
-      loginUser(token, user);
-
-      toast.success(`Welcome back, ${user.first_name}!`);
-
-      // Redirect to dashboard
-      window.location.href = '/dashboard';
-
+      if (res.success) {
+        // Login successful — go to dashboard
+        navigate('/dashboard');
+      } else {
+        toast.error(res.error || 'Login failed.');
+      }
     } catch (err) {
-      // Show the error message from the API
-      const message = err.response?.data?.error || 'Login failed. Please try again.';
-      toast.error(message);
+      toast.error(
+        err.response?.data?.error || 'Login failed.'
+      );
     } finally {
+      // Always clean up loading state and timer
       setIsLoading(false);
       setSlowStart(false);
       clearTimeout(slowTimer);
@@ -80,46 +78,48 @@ const { isMobile } = useWindowSize();
   // ── Render ─────────────────────────────────────────
   return (
     <div style={{
-                   display:   'flex',
-                   minHeight: '100vh',
-                   background:'var(--gray-50)',}}>
-                    
+      display:   'flex',
+      minHeight: '100vh',
+      background:'var(--gray-50)',
+    }}>
+
       {/* ── Left Panel — Branding ── */}
-      
+      {/* Hidden on mobile — form takes full width */}
       {!isMobile && (
-      <div style={styles.leftPanel}>
-        <div style={styles.brandContent}>
-          <div style={styles.logoWrap}>
-            <Briefcase size={40} color="white" />
-          </div>
-          <h1 style={styles.brandTitle}>LeaveSync</h1>
-          <p style={styles.brandSubtitle}>
-            Enterprise Leave Management for modern teams
-          </p>
-          <div style={styles.featureList}>
-            {[
-              'Manage leave requests effortlessly',
-              'Real-time approval workflows',
-              'Detailed reports and insights',
-              'South African labour law compliant',
-            ].map((feature, i) => (
-              <div key={i} style={styles.featureItem}>
-                <div style={styles.featureDot} />
-                <span>{feature}</span>
-              </div>
-            ))}
+        <div style={styles.leftPanel}>
+          <div style={styles.brandContent}>
+            <div style={styles.logoWrap}>
+              <Briefcase size={40} color="white" />
+            </div>
+            <h1 style={styles.brandTitle}>LeaveSync</h1>
+            <p style={styles.brandSubtitle}>
+              Enterprise Leave Management for modern teams
+            </p>
+            <div style={styles.featureList}>
+              {[
+                'Manage leave requests effortlessly',
+                'Real-time approval workflows',
+                'Detailed reports and insights',
+                'South African labour law compliant',
+              ].map((feature, i) => (
+                <div key={i} style={styles.featureItem}>
+                  <div style={styles.featureDot} />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
       )}
 
       {/* ── Right Panel — Login Form ── */}
-
       <div style={{
-                    ...styles.rightPanel,
-                    padding: isMobile ? '1.5rem 1rem' : '2rem',}}>
-
+        ...styles.rightPanel,
+        padding: isMobile ? '1.5rem 1rem' : '2rem',
+      }}>
         <div style={styles.formCard}>
+
+          {/* Form heading */}
           <div style={styles.formHeader}>
             <h2 style={styles.formTitle}>Welcome back</h2>
             <p style={styles.formSubtitle}>
@@ -128,9 +128,12 @@ const { isMobile } = useWindowSize();
           </div>
 
           <form onSubmit={handleSubmit}>
-            {/* Email */}
+
+            {/* ── Email Field ── */}
             <div className="form-group">
-              <label className="form-label">Email address</label>
+              <label className="form-label">
+                Email address
+              </label>
               <div style={styles.inputWrap}>
                 <Mail size={16} style={styles.inputIcon} />
                 <input
@@ -146,8 +149,8 @@ const { isMobile } = useWindowSize();
                 />
               </div>
             </div>
-         
-         {/* Password */}
+
+            {/* ── Password Field ── */}
             <div className="form-group">
               <label className="form-label">Password</label>
               <div style={styles.inputWrap}>
@@ -165,17 +168,18 @@ const { isMobile } = useWindowSize();
               </div>
             </div>
 
-            {/* Submit Button */}
+            {/* ── Submit Button ── */}
             <button
               type="submit"
-              className="btn btn-primary w-full"
+              className="btn btn-primary"
               disabled={isLoading}
               style={{ marginTop: '0.5rem', width: '100%' }}
             >
               {isLoading ? (
                 <>
                   <div className="spinner"
-                    style={{ width: 16, height: 16, borderWidth: 2 }}
+                    style={{ width: 16, height: 16,
+                             borderWidth: 2 }}
                   />
                   Signing in...
                 </>
@@ -186,46 +190,55 @@ const { isMobile } = useWindowSize();
                 </>
               )}
             </button>
+
+            {/* ── Slow Start Warning ── */}
+            {/* Shown after 5 seconds if server is slow */}
+            {/* Render free tier wakes up slowly */}
+            {slowStart && (
+              <div style={{
+                background:   '#FEF3C7',
+                border:       '1px solid #FCD34D',
+                borderRadius: '0.5rem',
+                padding:      '0.75rem 1rem',
+                marginTop:    '1rem',
+                fontSize:     '0.8125rem',
+                color:        '#92400E',
+                textAlign:    'center',
+                lineHeight:   1.5,
+              }}>
+                {'⏳'} Server is starting up — this takes
+                about 30 seconds on first load.
+                Please wait...
+              </div>
+            )}
+
           </form>
 
-
-
-        {/* Show message if server is taking long to respond */}
-          {slowStart && (
+          {/* ── Forgot Password ── */}
           <div style={{
-            background:   '#FEF3C7',
-            border:       '1px solid #FCD34D',
-            borderRadius: '0.5rem',
-            padding:      '0.75rem 1rem',
-            marginTop:    '1rem',
-            fontSize:     '0.8125rem',
-            color:        '#92400E',
-            textAlign:    'center',
-            lineHeight:   1.5,
+            textAlign:    'right',
+            marginTop:    '0.75rem',
+            marginBottom: '1rem',
           }}>
-             ⏳ Server is starting up — this takes about 30
-             seconds on first load. Please wait...
+            <Link
+              to="/forgot-password"
+              style={{
+                fontSize: '0.875rem',
+                color:    'var(--primary)',
+              }}
+            >
+              Forgot password?
+            </Link>
           </div>
-          )}
 
-
-
-          {/* Forgot password link */}
-          <div style={{ textAlign: 'right', marginTop: '-0.5rem',
-              marginBottom: '1rem' }}>
-          <Link
-                  to="/forgot-password"
-                  style={{ fontSize: '0.875rem',
-                  color: 'var(--primary)' }}>
-           Forgot password?
-          </Link>
-          </div>
-      
-          {/* Register Link */}
+          {/* ── Register Link ── */}
           <p style={styles.registerLink}>
             Don't have an account?{' '}
-            <Link to="/register">Register your company</Link>
+            <Link to="/register">
+              Register your company
+            </Link>
           </p>
+
         </div>
       </div>
     </div>
@@ -234,11 +247,6 @@ const { isMobile } = useWindowSize();
 
 // ─── STYLES ───────────────────────────────────────────
 const styles = {
-  page: {
-    display:       'flex',
-    minHeight:     '100vh',
-    background:    'var(--gray-50)',
-  },
   leftPanel: {
     flex:           '0 0 45%',
     background:     'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)',
@@ -248,8 +256,8 @@ const styles = {
     padding:        '3rem',
   },
   brandContent: {
-    color:     'white',
-    maxWidth:  '400px',
+    color:    'white',
+    maxWidth: '400px',
   },
   logoWrap: {
     width:          '72px',
@@ -300,13 +308,13 @@ const styles = {
     padding:        '2rem',
   },
   formCard: {
-    width:         '100%',
-    maxWidth:      '420px',
-    background:    'white',
-    borderRadius:  '1rem',
-    padding:       '2.5rem',
-    boxShadow:     '0 10px 25px rgba(0,0,0,0.08)',
-    border:        '1px solid var(--gray-200)',
+    width:        '100%',
+    maxWidth:     '420px',
+    background:   'white',
+    borderRadius: '1rem',
+    padding:      '2.5rem',
+    boxShadow:    '0 10px 25px rgba(0,0,0,0.08)',
+    border:       '1px solid var(--gray-200)',
   },
   formHeader: {
     marginBottom: '2rem',
@@ -325,14 +333,13 @@ const styles = {
     position: 'relative',
   },
   inputIcon: {
-    position:  'absolute',
-    left:      '0.75rem',
-    top:       '50%',
-    transform: 'translateY(-50%)',
-    color:     'var(--gray-400)',
+    position:      'absolute',
+    left:          '0.75rem',
+    top:           '50%',
+    transform:     'translateY(-50%)',
+    color:         'var(--gray-400)',
     pointerEvents: 'none',
   },
-
   registerLink: {
     textAlign:  'center',
     marginTop:  '1.5rem',
