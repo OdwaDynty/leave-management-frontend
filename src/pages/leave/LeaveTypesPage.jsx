@@ -12,7 +12,7 @@ import {
   ClipboardList, Check,
 } from 'lucide-react';
 
-import useWindowSize from '../../hooks/useWindowSize';
+
 
 import {
   listLeaveTypes,
@@ -268,7 +268,7 @@ const LeaveTypeModal = ({ leaveType, onSave, onClose }) => {
 
 // ─── MAIN COMPONENT ───────────────────────────────────
 const LeaveTypesPage = () => {
-  const { isMobile } = useWindowSize();
+  
   const [leaveTypes,  setLeaveTypes]  = useState([]);
   const [isLoading,   setIsLoading]   = useState(true);
   const [showModal,   setShowModal]   = useState(false);
@@ -375,9 +375,7 @@ const LeaveTypesPage = () => {
       ) : (
         <div style={{
                       display: 'grid',
-                      gridTemplateColumns: isMobile
-                      ? '1fr'
-                      : 'repeat(auto-fill, minmax(300px, 1fr))',
+                      gridTemplateColumns: '1fr',
                       gap: '1.25rem',}}>
 
           {leaveTypes.map(lt => (

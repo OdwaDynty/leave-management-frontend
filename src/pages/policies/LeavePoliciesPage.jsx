@@ -222,7 +222,7 @@ const PolicyModal = ({
 
 // ─── MAIN COMPONENT ───────────────────────────────────
 const LeavePoliciesPage = () => {
-  const { isMobile } = useWindowSize();
+  
   // ── State ──────────────────────────────────────────
   const [policies,    setPolicies]    = useState([]);
   const [leaveTypes,  setLeaveTypes]  = useState([]);
@@ -347,8 +347,8 @@ const LeavePoliciesPage = () => {
       {/* ── Auto-Assign Banner ── */}
       <div style={{
                     ...styles.assignBanner,
-                    flexDirection: isMobile ? 'column' : 'row',
-                    alignItems:    isMobile ? 'stretch' : 'center',}}>
+                    flexDirection: 'row',
+                    flexWrap:      'wrap',}}>
         <div style={styles.assignLeft}>
           <div style={styles.assignIcon}>
             <Play size={18} color="#4F46E5" />

@@ -12,7 +12,6 @@ import {
   User, Calendar, AlertCircle,
 } from 'lucide-react';
 
-import useWindowSize from '../../hooks/useWindowSize';
 
 import {
   getPendingApprovals,
@@ -240,7 +239,7 @@ const RequestCard = ({ request, onApprove, onReject,
 
 // ─── MAIN COMPONENT ───────────────────────────────────
 const ApprovalsPage = () => {
-  const { isMobile } = useWindowSize();
+  
   const [requests,     setRequests]     = useState([]);
   const [isLoading,    setIsLoading]    = useState(true);
   const [approvingId,  setApprovingId]  = useState(null);
@@ -345,9 +344,7 @@ const ApprovalsPage = () => {
         // Requests grid
         <div style={{
                       display: 'grid',
-                      gridTemplateColumns: isMobile
-                      ? '1fr'
-                      : 'repeat(auto-fill, minmax(340px, 1fr))',
+                      gridTemplateColumns: '1fr',
                       gap: '1.25rem',}}>
 
           {requests.map(request => (
