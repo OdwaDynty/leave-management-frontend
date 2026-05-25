@@ -9,6 +9,7 @@
 import { useState, useEffect } from 'react';
 
 const useWindowSize = () => {
+  const { isMobile, isTablet, width } = useWindowSize();
   // Initialise with current window size
   const [windowSize, setWindowSize] = useState({
     width:  window.innerWidth,
