@@ -34,15 +34,16 @@ const { isMobile } = useWindowSize();
 
   // ── Handle Form Submit ─────────────────────────────
   const handleSubmit = async (e) => {
+    const [slowStart, setSlowStart] = useState(false);
     e.preventDefault(); // Prevent page refresh
     setIsLoading(true);
     
-    //setSlowStart(false);
+    setSlowStart(false);
 
       // If loading takes more than 5 seconds show a message
       // This happens when Render server is waking up
   const slowTimer = setTimeout(() => {
-    //setSlowStart(true);
+    setSlowStart(true);
     }, 5000);
 
     // Basic validation
@@ -71,7 +72,7 @@ const { isMobile } = useWindowSize();
       toast.error(message);
     } finally {
       setIsLoading(false);
-      //setSlowStart(false);
+      setSlowStart(false);
       clearTimeout(slowTimer);
     }
   };
@@ -186,6 +187,28 @@ const { isMobile } = useWindowSize();
               )}
             </button>
           </form>
+
+
+
+        {/* Show message if server is taking long to respond */}
+          {slowStart && (
+          <div style={{
+            background:   '#FEF3C7',
+            border:       '1px solid #FCD34D',
+            borderRadius: '0.5rem',
+            padding:      '0.75rem 1rem',
+            marginTop:    '1rem',
+            fontSize:     '0.8125rem',
+            color:        '#92400E',
+            textAlign:    'center',
+            lineHeight:   1.5,
+          }}>
+             ⏳ Server is starting up — this takes about 30
+             seconds on first load. Please wait...
+          </div>
+          )}
+
+
 
           {/* Forgot password link */}
           <div style={{ textAlign: 'right', marginTop: '-0.5rem',
