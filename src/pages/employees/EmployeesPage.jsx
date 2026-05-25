@@ -20,9 +20,6 @@ import {
 } from '../../api/employees';
 import Avatar from '../../components/ui/Avatar';
 
-import useWindowSize from '../../hooks/useWindowSize';
-
-const { isMobile } = useWindowSize();
 
 // ─── ROLE BADGE ───────────────────────────────────────
 
@@ -62,7 +59,7 @@ const badgeStyle = {
 };
 
 // ─── ADD / EDIT EMPLOYEE MODAL ────────────────────────
-const EmployeeModal = ({ employee, onSave, onClose, isMobile, }) => {
+const EmployeeModal = ({ employee, onSave, onClose,}) => {
 
   // Get screen size for responsive layout
     
@@ -133,9 +130,12 @@ const EmployeeModal = ({ employee, onSave, onClose, isMobile, }) => {
             {/* First and Last Name */}
 
             <div style={{
-                          display: 'grid',
-                          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-                          gap: '0 1rem',}}>
+                    display: 'grid',
+                    gridTemplateColumns: '1fr',
+                    gap:                 '0',
+                    }}>
+
+
 
               <div className="form-group">
                 <label className="form-label">
@@ -210,9 +210,10 @@ const EmployeeModal = ({ employee, onSave, onClose, isMobile, }) => {
             {/* Role and Department */}
 
             <div style={{
-                          display:  'grid',
-                          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-                          gap: '0 1rem',}}>
+                    display: 'grid',
+                    gridTemplateColumns: '1fr',
+                    gap:                 '0',
+                    }}>
 
               <div className="form-group">
                 <label className="form-label">Role</label>
@@ -244,9 +245,10 @@ const EmployeeModal = ({ employee, onSave, onClose, isMobile, }) => {
             {/* Job Title and Phone */}
 
             <div style={{
-                          display: 'grid',
-                          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-                          gap: '0 1rem',}}>
+                    display: 'grid',
+                    gridTemplateColumns: '1fr',
+                    gap:                 '0',
+                    }}>
 
               <div className="form-group">
                 <label className="form-label">Job Title</label>
@@ -455,10 +457,11 @@ const EmployeesPage = () => {
         </div>
 
         <div style={{
-                      display: 'flex',
-                      flexDirection: isMobile ? 'column' : 'row',
-                      alignItems: isMobile ? 'stretch' : 'flex-end',
-                      gap: '1rem',}}>
+                  display:   'flex',
+                  flexWrap:  'wrap',
+                  alignItems:'flex-end',
+                  gap:       '1rem',
+                  }}>
 
           {/* Role Filter */}
           <div style={styles.filterGroup}>
@@ -645,7 +648,7 @@ const EmployeesPage = () => {
           employee={null}
           onSave={handleAdd}
           onClose={() => setShowModal(false)}
-          isMobile={isMobile}
+          
         />
       )}
 
@@ -655,7 +658,7 @@ const EmployeesPage = () => {
           employee={editTarget}
           onSave={handleEdit}
           onClose={() => setEditTarget(null)}
-          isMobile={isMobile}
+          
         />
       )}
     </div>
