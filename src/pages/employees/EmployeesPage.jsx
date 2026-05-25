@@ -22,6 +22,8 @@ import Avatar from '../../components/ui/Avatar';
 
 import useWindowSize from '../../hooks/useWindowSize';
 
+const { isMobile } = useWindowSize();
+
 // ─── ROLE BADGE ───────────────────────────────────────
 
 const RoleBadge = ({ role }) => {
@@ -60,11 +62,10 @@ const badgeStyle = {
 };
 
 // ─── ADD / EDIT EMPLOYEE MODAL ────────────────────────
-const EmployeeModal = ({ employee, onSave, onClose }) => {
+const EmployeeModal = ({ employee, onSave, onClose, isMobile, }) => {
 
   // Get screen size for responsive layout
-  const { isMobile } = useWindowSize();
-  
+    
   // If employee is passed in we are editing
   // If null we are adding a new employee
   const isEditing = !!employee;
@@ -644,6 +645,7 @@ const EmployeesPage = () => {
           employee={null}
           onSave={handleAdd}
           onClose={() => setShowModal(false)}
+          isMobile={isMobile}
         />
       )}
 
@@ -653,6 +655,7 @@ const EmployeesPage = () => {
           employee={editTarget}
           onSave={handleEdit}
           onClose={() => setEditTarget(null)}
+          isMobile={isMobile}
         />
       )}
     </div>

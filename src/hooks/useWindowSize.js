@@ -1,46 +1,47 @@
 // ─── USE WINDOW SIZE HOOK ─────────────────────────────
-// Custom React hook that returns the current window size
-// and whether the screen is mobile or tablet
+// Returns current window dimensions and breakpoint flags
 //
-// Usage:
-//   const { isMobile, isTablet, width } = useWindowSize();
-//   if (isMobile) { ... }
+// isMobile: true when screen width is 768px or less
+// isTablet: true when screen width is 1024px or less
+//
+// Uses useCallback and a stable event listener to
+// prevent infinite re-render loops
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const useWindowSize = () => {
-  const { isMobile, isTablet, width } = useWindowSize();
-  // Initialise with current window size
   const [windowSize, setWindowSize] = useState({
     width:  window.innerWidth,
     height: window.innerHeight,
   });
 
-  useEffect(() => {
-    // Handler called on every window resize event
-    const handleResize = () => {
-      setWindowSize({
-        width:  window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
+  // useCallback ensures handleResize is not recreated
+  // on every render — this prevents infinite loops
+  // where adding/removing the listener causes a render
+  // which adds/removes the listener again
+  const handleResize = useCallback(() => {
+    setWindowSize({
+      width:  window.innerWidth,
+      height: window.innerHeight,
+    });
+  }, []); // Empty array = function never changes
 
-    // Add resize listener when component mounts
+  useEffect(() => {
+    // Add resize listener once on mount
     window.addEventListener('resize', handleResize);
 
-    // Remove listener when component unmounts
-    // Prevents memory leaks
+    // Remove listener on unmount to prevent memory leaks
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []); // Empty array = only run on mount/unmount
+  }, [handleResize]); // Only re-run if handleResize changes
+                      // Since handleResize never changes
+                      // this effect only runs once
 
   return {
     width:    windowSize.width,
     height:   windowSize.height,
-    // true if screen width is 768px or less (phone)
     isMobile: windowSize.width <= 768,
-    // true if screen width is 1024px or less (tablet)
     isTablet: windowSize.width <= 1024,
   };
 };
