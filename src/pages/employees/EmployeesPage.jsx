@@ -61,6 +61,10 @@ const badgeStyle = {
 
 // ─── ADD / EDIT EMPLOYEE MODAL ────────────────────────
 const EmployeeModal = ({ employee, onSave, onClose }) => {
+
+  // Get screen size for responsive layout
+  const { isMobile } = useWindowSize();
+  
   // If employee is passed in we are editing
   // If null we are adding a new employee
   const isEditing = !!employee;
@@ -306,7 +310,6 @@ const EmployeeModal = ({ employee, onSave, onClose }) => {
 
 // ─── MAIN COMPONENT ───────────────────────────────────
 const EmployeesPage = () => {
-  const { isMobile } = useWindowSize();
   const [employees,   setEmployees]   = useState([]);
   const [isLoading,   setIsLoading]   = useState(true);
   const [searchTerm,  setSearchTerm]  = useState('');
