@@ -78,6 +78,7 @@ const toggleStyles = {
 
 // ─── LEAVE TYPE MODAL ─────────────────────────────────
 const LeaveTypeModal = ({ leaveType, onSave, onClose }) => {
+  
   const isEditing = !!leaveType;
 
   const [formData, setFormData] = useState({
