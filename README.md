@@ -2,31 +2,37 @@
 
 > Enterprise Leave Management SaaS — React Frontend
 
-A professional, mobile-responsive React dashboard for the LeaveSync platform. Enables employees, managers, and HR admins to manage leave requests, approvals, policies, and company settings through a clean role-based interface.
+A professional, fully mobile-responsive React dashboard for the LeaveSync platform. Built for South African companies to manage employee leave, approvals, policies, and HR administration through a clean role-based interface.
 
 ---
 
 ## 🚀 Live Demo
 
-- **App URL:** Coming soon
-- **Backend API:** https://github.com/YOUR_USERNAME/leave-management-api
+**App URL:** https://leave-management-frontend-beige.vercel.app
+
+Test Credentials:
+Company:  DigitSkillSolution Pty Ltd
+Email:    odwa@dss.co.za
+Password: Password123
+Role:     super_admin
 
 ---
 
 ## ✨ Features
 
-- 🔐 **Role-Based UI** — different pages and features per role
-- 📱 **Fully Mobile Responsive** — works on phones, tablets, desktops
-- 🌗 **Smart Navigation** — sidebar drawer on mobile, fixed on desktop
-- 📊 **Interactive Charts** — bar, pie, and trend charts via Recharts
-- 🗓️ **Leave Calendar** — monthly grid + list view with colour coding
+- 🔐 **Role-Based UI** — 4 roles with different pages and permissions
+- 📱 **Fully Mobile Responsive** — phones, tablets, desktops
+- 🌗 **Mobile Sidebar Drawer** — hamburger menu on small screens
+- 📊 **Interactive Charts** — bar, pie, and line charts via Recharts
+- 🗓️ **Leave Calendar** — monthly grid with colour-coded leave entries
 - 🔔 **Notification Centre** — real-time read/unread management
 - 📋 **Audit Trail** — filterable log of all sensitive actions
-- 🏆 **Role Requests** — self-service promotion submissions
-- 📐 **Leave Policies** — configure role-based entitlements
-- 🔑 **Password Reset** — email link with strength indicator
-- 🏢 **Company Settings** — profile management with plan info
-- 🛡️ **Route Guards** — direct URL access blocked per role
+- 🏆 **Role Requests** — self-service promotion workflow
+- 📐 **Leave Policies** — configure role-based entitlements per year
+- 🔑 **Password Reset** — email link with password strength indicator
+- 🏢 **Company Settings** — profile management with plan information
+- 💳 **Billing Page** — PayFast subscription plan management
+- 🛡️ **Route Guards** — role-based URL access protection
 
 ---
 
@@ -36,12 +42,40 @@ A professional, mobile-responsive React dashboard for the LeaveSync platform. En
 |---|---|
 | Framework | React 18 + Vite |
 | Routing | React Router DOM v6 |
-| HTTP Client | Axios with interceptors |
+| HTTP Client | Axios with JWT interceptors |
 | Charts | Recharts |
 | Icons | Lucide React |
 | Dates | date-fns |
 | Notifications | react-hot-toast |
 | Styling | Plain CSS with CSS variables |
+| Deployment | Vercel |
+
+---
+
+## 📱 Pages and Access
+
+| Page | Route | Access |
+|---|---|---|
+| Login | /login | Public |
+| Register | /register | Public |
+| Forgot Password | /forgot-password | Public |
+| Reset Password | /reset-password | Public |
+| Dashboard | /dashboard | All roles |
+| My Leave | /dashboard/my-leave | All roles |
+| My Balances | /dashboard/my-balances | All roles |
+| Calendar | /dashboard/calendar | All roles |
+| Notifications | /dashboard/notifications | All roles |
+| Role Request | /dashboard/role-requests | All roles |
+| Company Settings | /dashboard/settings | All roles |
+| Billing | /dashboard/billing | All roles |
+| Approvals | /dashboard/approvals | Manager+ |
+| Employees | /dashboard/employees | Manager+ |
+| Reports | /dashboard/reports | Manager+ |
+| Leave Types | /dashboard/leave-types | HR Admin+ |
+| Leave Policies | /dashboard/leave-policies | HR Admin+ |
+| Public Holidays | /dashboard/holidays | HR Admin+ |
+| Audit Trail | /dashboard/audit | HR Admin+ |
+| Role Requests Admin | /dashboard/role-requests-admin | HR Admin+ |
 
 ---
 
@@ -49,8 +83,8 @@ A professional, mobile-responsive React dashboard for the LeaveSync platform. En
 
 leave-management-frontend/
 ├── src/
-│   ├── api/                    # Axios API call functions
-│   │   ├── axios.js            # Base client with interceptors
+│   ├── api/
+│   │   ├── axios.js          # Base client + JWT interceptors
 │   │   ├── auth.js
 │   │   ├── employees.js
 │   │   ├── leaveTypes.js
@@ -62,61 +96,41 @@ leave-management-frontend/
 │   │   ├── audit.js
 │   │   ├── leavePolicies.js
 │   │   ├── roleRequests.js
-│   │   └── company.js
+│   │   ├── company.js
+│   │   └── billing.js
 │   ├── components/
 │   │   ├── layout/
-│   │   │   ├── DashboardLayout.jsx  # Shell with sidebar + header
-│   │   │   ├── Sidebar.jsx          # Navigation + mobile drawer
-│   │   │   └── Header.jsx           # Top bar + hamburger menu
+│   │   │   ├── DashboardLayout.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   └── Header.jsx
 │   │   └── ui/
-│   │       └── Avatar.jsx           # User initials avatar
+│   │       └── Avatar.jsx
 │   ├── context/
-│   │   └── AuthContext.jsx          # Global auth state
+│   │   └── AuthContext.jsx
 │   ├── hooks/
-│   │   └── useWindowSize.js         # Responsive breakpoint hook
+│   │   └── useWindowSize.js
 │   ├── pages/
-│   │   ├── auth/                    # Login, Register, Forgot/Reset Password
-│   │   ├── dashboard/               # Home with stats and charts
-│   │   ├── employees/               # Employee management
-│   │   ├── leave/                   # Leave requests, balances, types, calendar
-│   │   ├── notifications/           # Notification centre
-│   │   ├── reports/                 # Analytics and reports
-│   │   ├── holidays/                # Public holiday management
-│   │   ├── audit/                   # Audit trail
-│   │   ├── policies/                # Leave policies
-│   │   ├── roleRequests/            # Role change requests
-│   │   └── settings/                # Company settings
-│   ├── App.jsx                      # Router with role guards
-│   ├── main.jsx                     # App entry point
-│   └── index.css                    # Global styles + CSS variables
+│   │   ├── auth/
+│   │   ├── audit/
+│   │   ├── billing/
+│   │   ├── dashboard/
+│   │   ├── employees/
+│   │   ├── holidays/
+│   │   ├── leave/
+│   │   ├── notifications/
+│   │   ├── policies/
+│   │   ├── reports/
+│   │   ├── roleRequests/
+│   │   └── settings/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
 ├── .env.example
+├── .env.production
 ├── .gitignore
+├── vercel.json
 ├── package.json
 └── README.md
-
-## 📱 Pages
-
-| Page | Route | Roles |
-|---|---|---|
-| Login | /login | Public |
-| Register | /register | Public |
-| Forgot Password | /forgot-password | Public |
-| Reset Password | /reset-password | Public |
-| Dashboard Home | /dashboard | All |
-| My Leave Requests | /dashboard/my-leave | All |
-| My Leave Balances | /dashboard/my-balances | All |
-| Leave Calendar | /dashboard/calendar | All |
-| Notifications | /dashboard/notifications | All |
-| Role Change Request | /dashboard/role-requests | All |
-| Company Settings | /dashboard/settings | All |
-| Pending Approvals | /dashboard/approvals | Manager+ |
-| Employees | /dashboard/employees | Manager+ |
-| Reports | /dashboard/reports | Manager+ |
-| Leave Types | /dashboard/leave-types | HR Admin+ |
-| Leave Policies | /dashboard/leave-policies | HR Admin+ |
-| Public Holidays | /dashboard/holidays | HR Admin+ |
-| Audit Trail | /dashboard/audit | HR Admin+ |
-| Role Requests Admin | /dashboard/role-requests-admin | HR Admin+ |
 
 ---
 
@@ -124,41 +138,38 @@ leave-management-frontend/
 
 ### Prerequisites
 
-- Node.js v18 or higher
-- LeaveSync API running on `http://localhost:3000`
+- Node.js 20.x or higher
+- LeaveSync API running (see leave-management-api repo)
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/leave-management-frontend.git
+git clone https://github.com/OdwaDynty/leave-management-frontend.git
 
 # Navigate into the project
 cd leave-management-frontend
 
-# Install all dependencies
+# Install dependencies
 npm install
 ```
 
 ### Environment Variables
 
-Create a `.env` file in the root:
+Create a `.env` file:
 
 ```bash
-# URL of the LeaveSync API
+# Local development
 VITE_API_URL=http://localhost:3000/api
 ```
 
-**Note:** The current implementation uses a hardcoded base URL in `src/api/axios.js`. Update that file when deploying to production.
-
-### Run the App
+### Run Locally
 
 ```bash
-# Development server
 npm run dev
 ```
 
-Visit `http://localhost:5173` to open the app.
+Visit `http://localhost:5173`
 
 ### Build for Production
 
@@ -166,61 +177,60 @@ Visit `http://localhost:5173` to open the app.
 npm run build
 ```
 
-The built files are in the `dist/` folder ready for deployment to Vercel, Netlify or any static host.
-
 ---
 
 ## 🎨 Design System
 
-The app uses a CSS variable-based design system defined in `src/index.css`:
+CSS variables in `src/index.css`:
 
 ```css
---primary:       #4F46E5   /* Indigo brand colour */
---success:       #10B981   /* Green */
---warning:       #F59E0B   /* Amber */
---danger:        #EF4444   /* Red */
---sidebar-width: 260px     /* Sidebar width */
+--primary:       #4F46E5   /* Indigo */
+--success:       #10B981   /* Green  */
+--warning:       #F59E0B   /* Amber  */
+--danger:        #EF4444   /* Red    */
+--sidebar-width: 260px
 ```
-
-All components use these variables so the entire theme can be changed by editing one file.
 
 ---
 
-## 📱 Mobile Responsive
-
-The app is fully responsive across all screen sizes:
+## 📱 Responsive Breakpoints
 
 | Screen | Behaviour |
 |---|---|
-| Desktop 1280px+ | Full sidebar, 4-column grids, side-by-side layouts |
-| Tablet 768–1024px | Narrower sidebar, 2-column grids |
-| Mobile 375–768px | Hidden sidebar with drawer, stacked layouts, no left panels on auth pages |
+| Desktop 1280px+ | Full sidebar, multi-column layouts |
+| Tablet 768–1024px | Narrower sidebar, adjusted grids |
+| Mobile 375–768px | Drawer sidebar, stacked layouts |
+
+---
+
+## 🚀 Deployment
+
+Deployed on **Vercel** with automatic deploys from the `main` branch on GitHub.
+
+Environment variable required on Vercel:
+
+VITE_API_URL = https://leavesync-api.onrender.com/api
 
 ---
 
 ## 🔒 Security
 
-- JWT token stored in localStorage
+- JWT stored in localStorage
 - Axios interceptor attaches token to every request
 - 401 responses automatically log out the user
 - Role-based route guards on every protected page
-- Access denied page for direct URL navigation attempts
+- Access denied page for unauthorised URL access
 
 ---
-
-## 🧪 Test Accounts
-
-Admin:    odwa@acme.com   / Password123  (super_admin)
-Employee: thabo@acme.com  / Password123  (employee)
-
----
-
-## 📄 License
-
-MIT License — free to use, modify and distribute.
 
 ## 👤 Author
 
 **Odwa Dyantyi**
 Master's in Information Systems — University of the Western Cape
+IT Educator | Full-Stack Developer | SaaS Builder
 
+---
+
+## 📄 License
+
+MIT License

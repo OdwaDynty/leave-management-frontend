@@ -16,13 +16,6 @@
 
 import axios from 'axios';
 
-// Log the API URL on startup to help with debugging
-// This appears in the browser console
-console.log(
-  '🔗 API URL:',
-  import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
-);
-
 const api = axios.create({
   // Use the environment variable if set
   // Fall back to localhost only for local development
