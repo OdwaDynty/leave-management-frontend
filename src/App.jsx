@@ -23,6 +23,8 @@ import ForgotPasswordPage   from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage    from './pages/auth/ResetPasswordPage';
 import CompanySettingsPage  from './pages/settings/CompanySettingsPage';
 
+import PricingPage from './pages/billing/PricingPage';
+
 const LoadingScreen = () => (
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', flexDirection: 'column', gap: '1rem', color: '#6B7280' }}>
     <div className="spinner" style={{ width: 40, height: 40 }} />
@@ -106,7 +108,10 @@ const App = () => {
         <Route path="role-requests"
         element={<RoleRequestPage />}
         />
-        
+        <Route path="billing"
+          element={<PricingPage />}
+        />
+                
         {/* Company settings — all authenticated users can view */}
         <Route path="settings" element={<CompanySettingsPage />} />
 

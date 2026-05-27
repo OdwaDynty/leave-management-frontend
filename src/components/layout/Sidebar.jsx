@@ -22,6 +22,7 @@ import {
   FileText, Bell, BarChart2, Settings,
   LogOut, CheckSquare, Wallet, Sun,
   ClipboardList, TrendingUp, Building,
+  CreditCard,
   X,
 } from 'lucide-react';
 
@@ -122,6 +123,14 @@ const NAV_ITEMS = [
     path:  '/dashboard/settings',
     roles: null,
   },
+
+  {
+    label: 'Billing and Plans',
+    icon:  CreditCard,
+    path:  '/dashboard/billing',
+    // All users can view but only super_admin can upgrade
+    roles: null,
+   },
 ];
 
 // ─── SIDEBAR COMPONENT ────────────────────────────────
